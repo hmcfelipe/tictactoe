@@ -17,14 +17,12 @@ private:
 
 public:
     TicTacToe() : current_player('X'), game_over(false), winner(' ') {
-        // Inicializar o tabuleiro com espaços em branco
         for (auto& row : board) {
             row.fill(' ');
         }
     }
 
 void display_board() {
-// Exibir o tabuleiro no console]
     std::cout << "\nTABULEIRO\n";
     for (int row = 0; row < 3; ++row) {
         for (int col = 0; col < 3; ++col) {
@@ -46,12 +44,10 @@ void display_board() {
 
         std::unique_lock<std::mutex> lock(board_mutex);
 
-        // Esperar até que seja a vez do jogador ou o jogo tenha terminado
-
         while (!game_over && current_player != player) {
             turn_cv.wait(lock);
         }
-        // Se o jogo terminou, sair imediatamente
+
         if (game_over) {
             return false;
         }
@@ -60,7 +56,6 @@ void display_board() {
             board[row][col] = player;
             display_board();
 
-            // Verificar vitória e empate
             if (check_win(player)) {
                 game_over = true;
                 winner = player;
@@ -69,14 +64,13 @@ void display_board() {
                 winner = 'D';
             }
 
-            // Alternar o jogador
+
         if (player == 'X') {
             current_player = 'O';
         } else {
             current_player = 'X';
         }
 
-            // Notificar o próximo jogador ou encerrar as threads se o jogo acabou
             turn_cv.notify_all();
             return true;
         }
@@ -85,7 +79,7 @@ void display_board() {
     }
 
     bool check_win(char player) {
-        // Verificar linhas, colunas e diagonais
+
         for (int i = 0; i < 3; i++) {
             if (board[i][0] == player && board[i][1] == player && board[i][2] == player)
                 return true;
